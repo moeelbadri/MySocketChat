@@ -45,8 +45,9 @@ socket.on('connect', () => {//oldmsg
   console.log('Connected to Socket.IO server');
 });
 socket.on('oldmsg',(data)=>{
+  console.log(data)
 data.forEach(element => {
-  messages.innerHTML += `<p>${element[1]}:${element[0]}</p>`;
+  messages.innerHTML += `<p>${element[1]}:${element[0]} - ${element[2]}</p>`;
 });
 });
 socket.on('disconnect', () => {
@@ -64,7 +65,7 @@ socket.on('user', (message) => {
 socket.on('message', data => {
   console.log('Received message:', data);
   console.log("message :",data[0]);
-  messages.innerHTML += `<p>${data[1]}:${data[0]}</p>`;
+  messages.innerHTML += `<p>${data[1]}:${data[0]} -  ${data[2]}</p>`;
   messages.scrollTop = messages.scrollHeight;
   newmsg.play();
 });

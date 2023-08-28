@@ -1,13 +1,12 @@
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
-
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 let counter =0;
 let oldmsgs=[];
-let oldusers=[];
+let olddates=[];
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', socket => {
@@ -29,9 +28,13 @@ io.on('connection', socket => {
   console.log(data);
 })
   socket.on('message', (data) => {
+    const currentDate = new Date().toLocaleString(); // You can customize the format here
+
     currentusername=data[1];
+    data[2] = currentDate;
+    console.log(currentDate)
     oldmsgs.push(data);
-    //oldusers.push
+    //oldusers.pushs
     console.log(oldmsgs);
     console.log('message: ', data);
     io.emit('message', data);
