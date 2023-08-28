@@ -34,3 +34,21 @@ button[type="submit"] {
     color: black;
 
 }
+
+
+header{
+
+display: flex;
+justify-content: space-around;
+align-items: center;
+
+
+
+}
+
+li{
+  display: inline-block;
+list-style: none;
+text-decoration: none;
+
+}
