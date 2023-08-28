@@ -19,11 +19,13 @@ io.on('connection', socket => {
   //oldmsgs.push(['Hello, server! ',`user ${counter}`]);
   console.log('user',counter,' connected');
   socket.on('connected',(data)=>{
+    const currentDate = new Date().toLocaleString(); // You can customize the format here
+
     currentusername=data[1];
     if(currentusername){
-      io.emit('message', ['Hello, server! ',`user ${currentusername}`]);
+      io.emit('message', ['Hello, server! ',`user ${currentusername}`,`${currentDate}`]);
     }else{
-      io.emit('message', ['Hello, server! ',`user ${currentuserid}`]);
+      io.emit('message', ['Hello, server! ',`user ${currentuserid}`,`${currentDate}`]);
     }
   console.log(data);
 })
@@ -42,11 +44,13 @@ io.on('connection', socket => {
 
   socket.on('disconnect', () => {
     //oldmsgs.push(['Good night, server! ',`user ${counter}`]);
+    const currentDate = new Date().toLocaleString(); // You can customize the format here
+
     if(currentusername){
-      io.emit('message', ['Good night, server! ',`user ${currentusername}`]);
+      io.emit('message', ['Good night, server! ',`user ${currentusername}`,`${currentDate}`]);
       console.log('user',currentusername,' disconnected ',);
     }else{
-      io.emit('message', ['Good night, server! ',`user ${currentuserid}`]);
+      io.emit('message', ['Good night, server! ',`user ${currentuserid}`,`${currentDate}`]);
       console.log('user',currentuserid,' disconnected ',);
     }
     counter--;
