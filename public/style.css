@@ -1,3 +1,9 @@
+:root{
+
+
+
+}
+
 body {
   font-family: sans-serif;
 }
@@ -49,9 +55,12 @@ align-items: center;
 }
 
 li{
-  display: inline-block;
+
+display: inline-block;
 list-style: none;
 text-decoration: none;
+padding: 0 50px;
+font-family: 'Silkscreen';
 
 }
 
