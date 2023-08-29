@@ -57,46 +57,7 @@ io.on('connection', socket => {
     
   });
 });
-// Generate RSA key pair (public and private keys)
-async function generateRSAKeyPair() {
-  const keys = await crypto.subtle.generateKey(
-    {
-      name: 'RSA-OAEP',
-      modulusLength: 2048,
-      publicExponent: new Uint8Array([0x01, 0x00, 0x01]), // 65537
-      hash: 'SHA-256',
-    },
-    true,
-    ['encrypt', 'decrypt']
-  );
 
-  return keys;
-}
-// Encrypt data using RSA public key
-async function encryptData(data, publicKey) {
-  const encodedData = new TextEncoder().encode(data);
-  const encryptedData = await crypto.subtle.encrypt(
-    {
-      name: 'RSA-OAEP',
-    },
-    publicKey,
-    encodedData
-  );
-
-  return new Uint8Array(encryptedData);
-}
-// Decrypt data using RSA private key
-async function decryptData(encryptedData, privateKey) {
-  const decryptedData = await crypto.subtle.decrypt(
-    {
-      name: 'RSA-OAEP',
-    },
-    privateKey,
-    encryptedData
-  );
-
-  return new TextDecoder().decode(decryptedData);
-}
 
 const PORT = process.env.PORT || 80;
 
