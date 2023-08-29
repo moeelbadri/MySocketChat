@@ -10,6 +10,9 @@ const input = document.getElementById("name-input");
 if(getCookie()){
   username=getCookie();
   input.value=getCookie();
+}else{
+  alert( "xqweqweqwqweqewd");
+
 }
 const socket = io();
 input.addEventListener("input", updateValue);
@@ -67,12 +70,48 @@ socket.on('message', data => {
   console.log("message :",data[0]);
   messages.innerHTML += `<p>${data[1]}:${data[0]} -  ${data[2]}</p>`;
   messages.scrollTop = messages.scrollHeight;
-  newmsg.play();
-});
-if(!localStorage.getItem("PublicKeys")){
-// Generate RSA key pair (public and private keys)
-//console.log( generateRSAKeyPair());
+  newmsg.play()
+}); 
+
+// Check if the PublicKeys exist in localStorage
+//if (!localStorage.getItem("PublicKeys")) {
+
+  const keys = crypto.subtle.generateKey(
+    {
+      name: 'RSA-OAEP',
+      modulusLength: 2048,
+      publicExponent: new Uint8Array([0x01, 0x00, 0x01]), // 65537
+      hash: 'SHA-256',
+    },
+    true,
+    ['encrypt', 'decrypt']
+  );
+  console.log(keys, "xd")
+//}
+generateAndStoreRSAKeyPair();
+
+// Generate RSA key pair and store in localStorage
+async function generateAndStoreRSAKeyPair() {
+  console.log("test")
+  try {
+    const keys = await generateRSAKeyPair();
+    const publicKey = keys.publicKey;
+    const privateKey = keys.privateKey;
+
+    // Store the keys in localStorage
+    const keyPair = {
+      publicKey: publicKey,
+      privateKey: privateKey
+    };
+    localStorage.setItem("PublicKeys", JSON.stringify(keyPair));
+
+    console.log("RSA key pair generated and stored in localStorage");
+  } catch (error) {
+    console.error("Error generating and storing RSA key pair:", error);
+  }
 }
+
+// Generate RSA key pair
 async function generateRSAKeyPair() {
   const keys = await crypto.subtle.generateKey(
     {
