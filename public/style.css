@@ -3,8 +3,9 @@
   padding: 0;
 }
 body{
-
-  background-color:azure;
+  background: #0F2027;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #2C5364, #203A43, #0F2027); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 
@@ -38,9 +39,18 @@ button[type="submit"] {
 
 .h1test{
 
-    color: black;
+    color: whitesmoke;
     text-align: center;
     font-family: 'Cairo Play', sans-serif;
+    padding-top: 50px;
+    font-size: 27px;
+
+}
+.h1test :hover{
+
+  cursor: pointer;
+  font-size: 60px;
+  color: #54b3d6;
 
 }
 
@@ -83,8 +93,10 @@ a {
   margin: 0 -.25rem;
   padding: 0 .25rem;
   transition: color .3s ease-in-out, box-shadow .3s ease-in-out;
+  border-radius: 1px;
 }
 a:hover {
+  
   box-shadow: inset 100px 0 0 0 #54b3d6;
   color: white;
 }
