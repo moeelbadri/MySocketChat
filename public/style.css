@@ -54,7 +54,7 @@ align-items: center;
 
 }
 
-li{
+li a{
 
 display: inline-block;
 list-style: none;
