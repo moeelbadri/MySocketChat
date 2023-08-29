@@ -5,15 +5,15 @@ const messageForm = document.getElementById('message-form');
 const messageInput = document.getElementById('message-input');
 const messages = document.getElementById('messages');
 let username='';
+
+
 // add event listener to form
 const input = document.getElementById("name-input");
 if(getCookie()){
   username=getCookie();
   input.value=getCookie();
-}else{
-  alert( "xqweqweqwqweqewd");
-
 }
+
 const socket = io();
 input.addEventListener("input", updateValue);
 
@@ -74,27 +74,15 @@ socket.on('message', data => {
 }); 
 
 // Check if the PublicKeys exist in localStorage
-//if (!localStorage.getItem("PublicKeys")) {
-
-  const keys = crypto.subtle.generateKey(
-    {
-      name: 'RSA-OAEP',
-      modulusLength: 2048,
-      publicExponent: new Uint8Array([0x01, 0x00, 0x01]), // 65537
-      hash: 'SHA-256',
-    },
-    true,
-    ['encrypt', 'decrypt']
-  );
-  console.log(keys, "xd")
-//}
-generateAndStoreRSAKeyPair();
+if (!localStorage.getItem("PublicKeys")) {
+}
 
 // Generate RSA key pair and store in localStorage
 async function generateAndStoreRSAKeyPair() {
   console.log("test")
   try {
     const keys = await generateRSAKeyPair();
+    console.log(keys)
     const publicKey = keys.publicKey;
     const privateKey = keys.privateKey;
 
@@ -104,7 +92,7 @@ async function generateAndStoreRSAKeyPair() {
       privateKey: privateKey
     };
     localStorage.setItem("PublicKeys", JSON.stringify(keyPair));
-
+    console.log(await decryptData(await encryptData("Please remember that passphrase-based encryption is less secure than using a strong encryption key. If security is a concern, you might consider using a proper key management system and following best practices for key security.",publicKey), privateKey))
     console.log("RSA key pair generated and stored in localStorage");
   } catch (error) {
     console.error("Error generating and storing RSA key pair:", error);
@@ -113,19 +101,27 @@ async function generateAndStoreRSAKeyPair() {
 
 // Generate RSA key pair
 async function generateRSAKeyPair() {
-  const keys = await crypto.subtle.generateKey(
+  const keyPair = await window.crypto.subtle.generateKey(
     {
       name: 'RSA-OAEP',
       modulusLength: 2048,
-      publicExponent: new Uint8Array([0x01, 0x00, 0x01]), // 65537
-      hash: 'SHA-256',
+      publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+      hash: 'SHA-256'
     },
     true,
     ['encrypt', 'decrypt']
   );
 
-  return keys;
+  return keyPair;
 }
+generateRSAKeyPair().then((keyPair) => {
+  const publicKey = keyPair.publicKey;
+  const privateKey = keyPair.privateKey;
+
+  // Use the keys here
+  console.log('Public Key:', publicKey);
+  console.log('Private Key:', privateKey);
+});
 // Encrypt data using RSA public key
 async function encryptData(data, publicKey) {
   const encodedData = new TextEncoder().encode(data);
@@ -152,3 +148,67 @@ async function decryptData(encryptedData, privateKey) {
 
   return new TextDecoder().decode(decryptedData);
 }
+
+// Generate a symmetric key
+async function generateSymmetricKey() {
+  return window.crypto.subtle.generateKey(
+    {
+      name: 'AES-GCM',
+      length: 256
+    },
+    true,
+    ['encrypt', 'decrypt']
+  );
+}
+
+// Encrypt data using the symmetric key
+async function encryptDataWithSymmetricKey(data, symmetricKey) {
+  const encodedData = new TextEncoder().encode(data);
+  const iv = window.crypto.getRandomValues(new Uint8Array(12)); // 96-bit IV
+  const encryptedData = await window.crypto.subtle.encrypt(
+    {
+      name: 'AES-GCM',
+      iv: iv
+    },
+    symmetricKey,
+    encodedData
+  );
+
+  return { iv: iv, encryptedData: encryptedData };
+}
+
+// Combine asymmetric and symmetric encryption
+
+async function encryptAndStoreData(data, publicKey) {
+  try {
+    const keyPair = await generateSymmetricKey();
+    const symmetricKey = keyPair;
+
+    // Encrypt data using the symmetric key
+    const { iv, encryptedData } = await encryptDataWithSymmetricKey(data, symmetricKey);
+
+    // Encrypt symmetric key using recipient's public key
+    const encryptedSymmetricKey = await encryptData(symmetricKey, publicKey);
+
+    // Store the encrypted data and encrypted symmetric key
+    const encryptedDataAndKey = {
+      iv: iv,
+      encryptedData: encryptedData,
+      encryptedSymmetricKey: encryptedSymmetricKey
+    };
+    localStorage.setItem("EncryptedDataAndKey", JSON.stringify(encryptedDataAndKey));
+
+    console.log("Data encrypted and stored");
+  } catch (error) {
+    console.error("Error encrypting and storing data:", error);
+  }
+}
+
+document.getElementById('keys').addEventListener('click', () => {
+  try {
+
+    generateAndStoreRSAKeyPair();
+  } catch (err) {
+    console.log(err);
+  }
+});
