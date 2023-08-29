@@ -1,12 +1,9 @@
-:root{
-
-
-
+*{
+  margin: 0;
+  padding: 0;
 }
 
-body {
-  font-family: sans-serif;
-}
+
 
 #messages {
   height: 500px;
@@ -50,12 +47,13 @@ header{
 display: flex;
 justify-content: space-around;
 align-items: center;
+
 }
 
 li {
 display: inline-block;
 list-style: none;
-padding: 0 250px;
+padding: 0 120px;
 font-family: 'Silkscreen';
 
 
