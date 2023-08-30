@@ -4,6 +4,7 @@ var newmsg = new Audio('message_tone.mp3');
 const messageForm = document.getElementById('message-form');
 const messageInput = document.getElementById('message-input');
 const messages = document.getElementById('messages');
+const room = document.getElementById('room');
 let username='';
 
 
@@ -47,10 +48,16 @@ socket.on('connect', () => {//oldmsg
   socket.emit('connected',['Hello, server! ',`${username}`]);
   console.log('Connected to Socket.IO server');
 });
+socket.on('room', (rooms) => {//rooms
+  rooms.forEach(rooms,index =>{
+     let temp= `<option id = "room${index}">room${index}<option>`
+     room.appendChild(temp)
+  })
+});
 socket.on('oldmsg',(data)=>{
   console.log(data)
 data.forEach(element => {
-  messages.innerHTML += `<p>${element[1]}:${element[0]} - ${element[2]}</p>`;
+  messages.innerHTML += `<p className="msgs">${element[1]}:${element[0]}                      - ${element[2]}</p>`;
 });
 });
 socket.on('disconnect', () => {
@@ -68,7 +75,7 @@ socket.on('user', (message) => {
 socket.on('message', data => {
   console.log('Received message:', data);
   console.log("message :",data[0]);
-  messages.innerHTML += `<p>${data[1]}:${data[0]} -  ${data[2]}</p>`;
+  messages.innerHTML += `<p className="msgs" >${data[1]}:${data[0]}                             -  ${data[2]}</p>`;
   messages.scrollTop = messages.scrollHeight;
   newmsg.play()
 }); 
@@ -114,14 +121,7 @@ async function generateRSAKeyPair() {
 
   return keyPair;
 }
-generateRSAKeyPair().then((keyPair) => {
-  const publicKey = keyPair.publicKey;
-  const privateKey = keyPair.privateKey;
 
-  // Use the keys here
-  console.log('Public Key:', publicKey);
-  console.log('Private Key:', privateKey);
-});
 // Encrypt data using RSA public key
 async function encryptData(data, publicKey) {
   const encodedData = new TextEncoder().encode(data);

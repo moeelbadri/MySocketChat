@@ -22,10 +22,17 @@ body{
   padding: 5px;
   font-size: 16px;
 }
+p{
+
+  font-size: 22px;
+}
 #name-input {
-  width: 70%;
+  width: 25%;
   padding: 5px;
   font-size: 16px;
+}
+select {
+  width:100px;
 }
 button[type="submit"] {
   padding: 5px 10px;

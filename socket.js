@@ -10,6 +10,7 @@ let olddates=[];
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', socket => {
+  socket.join("some room");
   counter++;
   let currentuserid=counter;
   let currentusername;
